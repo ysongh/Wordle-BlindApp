@@ -3,5 +3,6 @@ version = "0.1.0"
 authors = [""]
 
 [[programs]]
-path = "src/main.py"
+path = "src/wordle.py"
+name = "wordle"
 prime_size = 128

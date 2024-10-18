@@ -36,3 +36,6 @@ next-env.d.ts
 # Nada venv
 nada/.venv/
 .DS_Store
+
+# Other
+__pycache__
