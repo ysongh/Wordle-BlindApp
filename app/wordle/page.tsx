@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { Login } from "../components/Login";
 
 const WORD_LENGTH = 5;
 const MAX_ATTEMPTS = 6;
@@ -63,7 +64,7 @@ export default function Wordle() {
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
       <h1 className="text-4xl font-bold mb-8 text-gray-800">Wordle Clone</h1>
-      
+      <Login />
       <div className="grid gap-2 mb-4">
         {guesses.map((guess, rowIndex) => (
           <div key={rowIndex} className="flex gap-2">
