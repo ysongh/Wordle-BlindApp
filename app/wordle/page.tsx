@@ -1,13 +1,20 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useNilStoreProgram } from "@nillion/client-react-hooks";
+
 import { Login } from "../components/Login";
+import { transformNadaProgramToUint8Array } from '../utils/transformNadaProgramToUint8Array';
 
 const WORD_LENGTH = 5;
 const MAX_ATTEMPTS = 6;
 const WORDS = ['REACT', 'LEARN', 'BUILD', 'QUICK', 'STUFF', 'WORLD'];
 
+const PROGRAM_NAME = "wordle";
+
 export default function Wordle() {
+  const nilStoreProgram = useNilStoreProgram();
+
   const [targetWord, setTargetWord] = useState('');
   const [guesses, setGuesses] = useState(Array(MAX_ATTEMPTS).fill(''));
   const [currentGuess, setCurrentGuess] = useState('');
@@ -18,6 +25,21 @@ export default function Wordle() {
   useEffect(() => {
     setTargetWord(WORDS[Math.floor(Math.random() * WORDS.length)]);
   }, []);
+
+  // Action to store Program with Nada
+  const handleStoreProgram = async () => {
+    try {
+      const programBinary = await transformNadaProgramToUint8Array(
+        `/programs/${PROGRAM_NAME}.nada.bin`
+      );
+      nilStoreProgram.execute({
+        name: PROGRAM_NAME,
+        program: programBinary,
+      });
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   const handleKeyPress = (e) => {
     if (gameOver) return;
@@ -65,6 +87,17 @@ export default function Wordle() {
     <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
       <h1 className="text-4xl font-bold mb-8 text-gray-800">Wordle Clone</h1>
       <Login />
+      <button
+        onClick={() => handleStoreProgram()}
+        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out mt-2 inline-block"
+      >
+        Store Program
+      </button>
+      {nilStoreProgram.data && (
+        <div className="mt-4 mb-5">
+          <p className="text-sm text-gray-600">Program ID: {nilStoreProgram.data}</p>
+        </div>
+      )}
       <div className="grid gap-2 mb-4">
         {guesses.map((guess, rowIndex) => (
           <div key={rowIndex} className="flex gap-2">
