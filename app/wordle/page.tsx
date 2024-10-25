@@ -1,7 +1,14 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useNilStoreProgram } from "@nillion/client-react-hooks";
+import {
+  NadaValue,
+  NadaValues,
+  NamedValue,
+  PartyName,
+  ProgramBindings,
+} from "@nillion/client-core";
+import { useNilStoreProgram,  useNilCompute, useNillion } from "@nillion/client-react-hooks";
 
 import { Login } from "../components/Login";
 import { transformNadaProgramToUint8Array } from '../utils/transformNadaProgramToUint8Array';
@@ -14,6 +21,8 @@ const PROGRAM_NAME = "wordle";
 
 export default function Wordle() {
   const nilStoreProgram = useNilStoreProgram();
+  const { client } = useNillion();
+  const nilCompute = useNilCompute();
 
   const [targetWord, setTargetWord] = useState('');
   const [guesses, setGuesses] = useState(Array(MAX_ATTEMPTS).fill(''));
@@ -57,6 +66,8 @@ export default function Wordle() {
     const newGuesses = [...guesses];
     newGuesses[currentRow] = currentGuess;
     setGuesses(newGuesses);
+    console.log(currentGuess);
+    handleCompute();
 
     if (currentGuess === targetWord) {
       setGameOver(true);
@@ -68,6 +79,27 @@ export default function Wordle() {
       setCurrentRow(prev => prev + 1);
       setCurrentGuess('');
     }
+  };
+
+  const handleCompute = () => {
+    console.log(nilStoreProgram.data);
+    if (!nilStoreProgram.data) throw new Error("compute: program id required");
+
+    const bindings = ProgramBindings.create(nilStoreProgram.data)
+      .addInputParty(PartyName.parse("Party1"), client.partyId)
+      .addOutputParty(PartyName.parse("Party1"), client.partyId);
+
+    const values = NadaValues.create()
+      .insert(NamedValue.parse("letter_1"), NadaValue.createSecretInteger(1))
+      .insert(NamedValue.parse("letter_2"), NadaValue.createSecretInteger(2))
+      .insert(NamedValue.parse("letter_3"), NadaValue.createSecretInteger(4))
+      .insert(NamedValue.parse("guess_letter_1"), NadaValue.createSecretInteger(1))
+      .insert(NamedValue.parse("guess_letter_2"), NadaValue.createSecretInteger(2))
+      .insert(NamedValue.parse("guess_letter_3"), NadaValue.createSecretInteger(4));
+
+    nilCompute.execute({ bindings, values });
+    console.log(nilCompute);
+    console.log(nilCompute.data);
   };
 
   useEffect(() => {
@@ -128,6 +160,13 @@ export default function Wordle() {
       <div className="mt-8 text-gray-600">
         Type letters to guess the {WORD_LENGTH}-letter word
       </div>
+
+      
+      {nilCompute.isSuccess && (
+        <div className="mt-4 mb-5">
+           {`${nilCompute.data?.substring(0, 4)}...${nilCompute.data?.substring(nilCompute.data.length - 4)}`}
+        </div>
+      )}
     </div>
   );
 }
