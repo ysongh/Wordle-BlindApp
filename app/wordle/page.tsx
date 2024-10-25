@@ -12,6 +12,7 @@ import { useNilStoreProgram,  useNilCompute, useNillion } from "@nillion/client-
 
 import { Login } from "../components/Login";
 import { transformNadaProgramToUint8Array } from '../utils/transformNadaProgramToUint8Array';
+import { letterToNumber } from '../utils/letterToNumber';
 
 const WORD_LENGTH = 5;
 const MAX_ATTEMPTS = 6;
@@ -66,7 +67,6 @@ export default function Wordle() {
     const newGuesses = [...guesses];
     newGuesses[currentRow] = currentGuess;
     setGuesses(newGuesses);
-    console.log(currentGuess);
     handleCompute();
 
     if (currentGuess === targetWord) {
@@ -82,7 +82,6 @@ export default function Wordle() {
   };
 
   const handleCompute = () => {
-    console.log(nilStoreProgram.data);
     if (!nilStoreProgram.data) throw new Error("compute: program id required");
 
     const bindings = ProgramBindings.create(nilStoreProgram.data)
@@ -90,16 +89,14 @@ export default function Wordle() {
       .addOutputParty(PartyName.parse("Party1"), client.partyId);
 
     const values = NadaValues.create()
-      .insert(NamedValue.parse("letter_1"), NadaValue.createSecretInteger(1))
-      .insert(NamedValue.parse("letter_2"), NadaValue.createSecretInteger(2))
-      .insert(NamedValue.parse("letter_3"), NadaValue.createSecretInteger(4))
-      .insert(NamedValue.parse("guess_letter_1"), NadaValue.createSecretInteger(1))
-      .insert(NamedValue.parse("guess_letter_2"), NadaValue.createSecretInteger(2))
-      .insert(NamedValue.parse("guess_letter_3"), NadaValue.createSecretInteger(4));
+      .insert(NamedValue.parse("letter_1"), NadaValue.createSecretInteger(letterToNumber(targetWord[0])))
+      .insert(NamedValue.parse("letter_2"), NadaValue.createSecretInteger(letterToNumber(targetWord[1])))
+      .insert(NamedValue.parse("letter_3"), NadaValue.createSecretInteger(letterToNumber(targetWord[2])))
+      .insert(NamedValue.parse("guess_letter_1"), NadaValue.createSecretInteger(letterToNumber(currentGuess[0])))
+      .insert(NamedValue.parse("guess_letter_2"), NadaValue.createSecretInteger(letterToNumber(currentGuess[1])))
+      .insert(NamedValue.parse("guess_letter_3"), NadaValue.createSecretInteger(letterToNumber(currentGuess[2])));
 
     nilCompute.execute({ bindings, values });
-    console.log(nilCompute);
-    console.log(nilCompute.data);
   };
 
   useEffect(() => {
