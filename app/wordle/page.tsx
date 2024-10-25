@@ -8,7 +8,7 @@ import {
   PartyName,
   ProgramBindings,
 } from "@nillion/client-core";
-import { useNilStoreProgram,  useNilCompute, useNillion } from "@nillion/client-react-hooks";
+import { useNilStoreProgram,  useNilCompute, useNilComputeOutput, useNillion } from "@nillion/client-react-hooks";
 
 import { Login } from "../components/Login";
 import { transformNadaProgramToUint8Array } from '../utils/transformNadaProgramToUint8Array';
@@ -24,6 +24,7 @@ export default function Wordle() {
   const nilStoreProgram = useNilStoreProgram();
   const { client } = useNillion();
   const nilCompute = useNilCompute();
+  const nilComputeOutput = useNilComputeOutput();
 
   const [targetWord, setTargetWord] = useState('');
   const [guesses, setGuesses] = useState(Array(MAX_ATTEMPTS).fill(''));
@@ -35,6 +36,11 @@ export default function Wordle() {
   useEffect(() => {
     setTargetWord(WORDS[Math.floor(Math.random() * WORDS.length)]);
   }, []);
+
+  useEffect(() => {
+    if (nilCompute.data) handleGetOutput();
+  }, [!nilCompute.data])
+  
 
   // Action to store Program with Nada
   const handleStoreProgram = async () => {
@@ -50,6 +56,22 @@ export default function Wordle() {
       console.log("error", error);
     }
   };
+
+  const handleGetOutput = () => {
+    if (!nilCompute.data) throw new Error("compute-output: Compute id is required");
+    nilComputeOutput.execute({ id: nilCompute.data });
+  };
+
+  let computeOutput = "idle";
+  if (nilComputeOutput.isSuccess) {
+    computeOutput = JSON.stringify(nilComputeOutput.data, (key, value) => {
+      if (typeof value === "bigint") {
+        return value.toString();
+      }
+      return value;
+    });
+  }
+
 
   const handleKeyPress = (e) => {
     if (gameOver) return;
@@ -164,6 +186,11 @@ export default function Wordle() {
            {`${nilCompute.data?.substring(0, 4)}...${nilCompute.data?.substring(nilCompute.data.length - 4)}`}
         </div>
       )}
+
+      <ul className="list-disc pl-5 mt-4">
+        <li className="mt-2">Status: {nilComputeOutput.status}</li>
+        <li className="mt-2">Output: {computeOutput}</li>
+      </ul>
     </div>
   );
 }
