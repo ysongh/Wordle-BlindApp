@@ -8,6 +8,6 @@ inputs:
   letter_2: 3
   letter_3: 3
 expected_outputs:
-  my_output_0: 1
-  my_output_1: 0
-  my_output_2: 1
+  0: 1
+  1: 0
+  2: 1

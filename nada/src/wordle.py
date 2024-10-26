@@ -19,7 +19,6 @@ def nada_main():
     result.append(check_match(letter_2, guess_letter_2).if_else(Integer(1), Integer(0)))
     result.append(check_match(letter_3, guess_letter_3).if_else(Integer(1), Integer(0)))
 
-    outputs = [Output(result[i], "my_output_" + str(i), party1) for i in range(size)]
+    outputs = [Output(result[i], str(i), party1) for i in range(size)]
 
     return outputs
-    # return [Output(number_of_correct, "my_output", party1)]
