@@ -1,18 +1,13 @@
 ---
 program: wordle
 inputs:
-  guess_letter_1:
-    SecretInteger: "3"
-  letter_2:
-    SecretInteger: "2"
-  letter_1:
-    SecretInteger: "3"
-  letter_3:
-    SecretInteger: "3"
-  guess_letter_3:
-    SecretInteger: "3"
-  guess_letter_2:
-    SecretInteger: "3"
+  guess_letter_1: 3
+  guess_letter_2: 2
+  guess_letter_3: 3
+  letter_1: 3
+  letter_2: 3
+  letter_3: 3
 expected_outputs:
-  my_output:
-    SecretInteger: "2"
+  my_output_0: 1
+  my_output_1: 0
+  my_output_2: 1

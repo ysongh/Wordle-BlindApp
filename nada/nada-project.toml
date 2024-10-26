@@ -6,8 +6,3 @@ authors = [""]
 path = "src/wordle.py"
 name = "wordle"
 prime_size = 128
-
-[[programs]]
-path = "src/secret_addition.py"
-name = "secret_addition"
-prime_size = 128
