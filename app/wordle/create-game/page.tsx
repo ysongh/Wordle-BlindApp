@@ -1,11 +1,16 @@
 "use client";
 
 import { useState } from 'react';
+import { useNilStoreValue } from "@nillion/client-react-hooks";
+
 import { Login } from "../../components/Login";
 
 export default function WordleSetup() {
+  const nilStore = useNilStoreValue();
+
   const [customWord, setCustomWord] = useState('');
   const [error, setError] = useState('');
+
 
   const handleWordSubmit = () => {
     const word = customWord.trim().toUpperCase();
@@ -26,6 +31,7 @@ export default function WordleSetup() {
     }
 
     setError('');
+    nilStore.execute({ name: "data", data: word, ttl: 1 });
   };
 
   return (
@@ -33,7 +39,7 @@ export default function WordleSetup() {
       <h1 className="text-4xl font-bold mb-8 text-gray-800">Wordle Setup</h1>
       
       <Login />
-      
+
       <div className="w-full max-w-md space-y-4">
         <div className="space-y-2">
           <label htmlFor="word" className="block text-sm font-medium text-gray-700">
@@ -60,6 +66,19 @@ export default function WordleSetup() {
         >
           Create Game
         </button>
+        <ul className="mt-4">
+        <li className="mt-2">Status: {nilStore.status}</li>
+        <li className="mt-2">
+          Id:
+          {nilStore.isSuccess ? (
+            <>
+              {`${nilStore.data?.substring(0, 6)}...${nilStore.data?.substring(nilStore.data.length - 6)}`}
+            </>
+          ) : (
+            "idle"
+          )}
+        </li>
+      </ul>
       </div>
     </div>
   );
