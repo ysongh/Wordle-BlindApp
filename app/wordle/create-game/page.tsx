@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { Login } from "../../components/Login";
 
 export default function WordleSetup() {
   const [customWord, setCustomWord] = useState('');
@@ -30,6 +31,8 @@ export default function WordleSetup() {
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
       <h1 className="text-4xl font-bold mb-8 text-gray-800">Wordle Setup</h1>
+      
+      <Login />
       
       <div className="w-full max-w-md space-y-4">
         <div className="space-y-2">
