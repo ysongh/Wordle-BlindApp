@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClientWrapper } from "./components/ClientWrapper";
+import Navbar from "./components/Navbar";
 
 export const metadata: Metadata = {
   title: "Create Nillion App",
@@ -15,6 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <Navbar />
         <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>
