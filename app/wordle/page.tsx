@@ -135,8 +135,8 @@ export default function Wordle() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
-      <h1 className="text-4xl font-bold mb-8 text-gray-800">Wordle Clone</h1>
+    <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4 mt-20">
+      <h1 className="text-4xl font-bold mb-2 text-gray-800">Wordle Clone</h1>
       <Login />
       <button
         onClick={() => handleStoreProgram()}
