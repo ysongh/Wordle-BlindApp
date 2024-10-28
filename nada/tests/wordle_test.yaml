@@ -1,13 +1,13 @@
 ---
 program: wordle
 inputs:
-  guess_letter_1: 3
-  guess_letter_2: 2
-  guess_letter_3: 3
   letter_1: 3
-  letter_2: 3
-  letter_3: 3
+  letter_2: 1
+  letter_3: 1
+  guess_letter_1: 3
+  guess_letter_2: 99
+  guess_letter_3: 1
 expected_outputs:
-  0: 1
-  1: 0
-  2: 1
+  1: 1
+  2: 0
+  3: 1

@@ -1,10 +1,18 @@
 from nada_dsl import *
 
+SIZE = 3
+
 def check_match(value_1: SecretInteger, value_2: Integer) -> Boolean:
     return value_1 == value_2
 
+def is_number_present_in_list(array: List[SecretInteger], value: SecretInteger) -> Boolean:
+    is_found = Integer(0)
+    for i in range(SIZE):
+        is_found += (value == array[i]).if_else(Integer(1), Integer(0))
+
+    return is_found > Integer(0)
+
 def nada_main():
-    size = 3
     party1 = Party(name="Party1")
 
     letter_1 = SecretInteger(Input(name="letter_1", party=party1))
@@ -21,10 +29,10 @@ def nada_main():
     ]
 
     result = []
-    result.append(check_match(letter_1, guess_letter_1).if_else(Integer(1), Integer(0)))
-    result.append(check_match(letter_2, guess_letter_2).if_else(Integer(1), Integer(0)))
-    result.append(check_match(letter_3, guess_letter_3).if_else(Integer(1), Integer(0)))
+    result.append((check_match(letter_1, guess_letter_1)).if_else((is_number_present_in_list(word, guess_letter_1)).if_else(Integer(1), Integer(2)), Integer(0)))
+    result.append((check_match(letter_2, guess_letter_2)).if_else((is_number_present_in_list(word, guess_letter_2)).if_else(Integer(1), Integer(2)), Integer(0)))
+    result.append((check_match(letter_3, guess_letter_3)).if_else((is_number_present_in_list(word, guess_letter_3)).if_else(Integer(1), Integer(2)), Integer(0)))
 
-    outputs = [Output(result[i], str(i), party1) for i in range(size)]
+    outputs = [Output(result[i], str(i + 1), party1) for i in range(SIZE)]
 
     return outputs
