@@ -14,6 +14,12 @@ def nada_main():
     guess_letter_2 = SecretInteger(Input(name="guess_letter_2", party=party1))
     guess_letter_3 = SecretInteger(Input(name="guess_letter_3", party=party1))
 
+    word: list[SecretInteger] = [
+        letter_1,
+        letter_2,
+        letter_3
+    ]
+
     result = []
     result.append(check_match(letter_1, guess_letter_1).if_else(Integer(1), Integer(0)))
     result.append(check_match(letter_2, guess_letter_2).if_else(Integer(1), Integer(0)))
