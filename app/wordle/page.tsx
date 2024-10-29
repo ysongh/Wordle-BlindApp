@@ -17,7 +17,11 @@ import { letterToNumber } from '../utils/letterToNumber';
 const WORD_LENGTH = 5;
 const MAX_ATTEMPTS = 6;
 const WORDS = ['REACT', 'LEARN', 'BUILD', 'QUICK', 'STUFF', 'WORLD'];
-
+const KEYBOARD_ROWS = [
+  ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+  ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+  ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACK']
+];
 const PROGRAM_NAME = "wordle";
 
 export default function Wordle() {
@@ -32,6 +36,7 @@ export default function Wordle() {
   const [currentRow, setCurrentRow] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [message, setMessage] = useState('');
+  const [usedLetters, setUsedLetters] = useState({});
 
   useEffect(() => {
     setTargetWord(WORDS[Math.floor(Math.random() * WORDS.length)]);
@@ -40,8 +45,22 @@ export default function Wordle() {
   useEffect(() => {
     if (nilCompute.data) handleGetOutput();
   }, [!nilCompute.data])
-  
 
+  useEffect(() => {
+    const handleKeyboard = (e) => {
+      if (e.key === 'Enter') {
+        handleKeyPress('ENTER');
+      } else if (e.key === 'Backspace') {
+        handleKeyPress('BACK');
+      } else if (/^[a-zA-Z]$/.test(e.key)) {
+        handleKeyPress(e.key.toUpperCase());
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyboard);
+    return () => window.removeEventListener('keydown', handleKeyboard);
+  }, [currentGuess, gameOver]);
+  
   // Action to store Program with Nada
   const handleStoreProgram = async () => {
     try {
@@ -73,15 +92,29 @@ export default function Wordle() {
   }
 
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = (key) => {
     if (gameOver) return;
 
-    if (e.key === 'Enter' && currentGuess.length === WORD_LENGTH) {
+    if (key === 'ENTER' && currentGuess.length === 5) {
       submitGuess();
-    } else if (e.key === 'Backspace') {
+    } else if (key === 'BACK') {
       setCurrentGuess(prev => prev.slice(0, -1));
-    } else if (currentGuess.length < WORD_LENGTH && /^[A-Za-z]$/.test(e.key)) {
-      setCurrentGuess(prev => (prev + e.key).toUpperCase());
+    } else if (currentGuess.length < 5 && /^[A-Z]$/.test(key)) {
+      setCurrentGuess(prev => prev + key);
+    }
+  };
+
+  const getKeyColor = (key) => {
+    if (!usedLetters[key]) return 'bg-gray-300 hover:bg-gray-400';
+    switch (usedLetters[key]) {
+      case 'correct':
+        return 'bg-green-500 hover:bg-green-600';
+      case 'present':
+        return 'bg-yellow-500 hover:bg-yellow-600';
+      case 'absent':
+        return 'bg-gray-600 hover:bg-gray-700';
+      default:
+        return 'bg-gray-300 hover:bg-gray-400';
     }
   };
 
@@ -121,11 +154,6 @@ export default function Wordle() {
     nilCompute.execute({ bindings, values });
   };
 
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [currentGuess, gameOver]);
-
   const getTileColor = (letter, index, rowIndex) => {
     if (rowIndex > currentRow) return 'bg-gray-200';
     if (!letter) return 'bg-gray-200';
@@ -164,6 +192,38 @@ export default function Wordle() {
                 >
                   {letter}
                 </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+
+      {/* Virtual Keyboard */}
+      <div className="w-full max-w-2xl">
+        {KEYBOARD_ROWS.map((row, rowIndex) => (
+          <div key={rowIndex} className="flex justify-center gap-1 mb-2">
+            {row.map((key) => {
+              const isWideKey = key === 'ENTER' || key === 'BACK';
+              return (
+                <button
+                  key={key}
+                  onClick={() => handleKeyPress(key)}
+                  className={`
+                    ${isWideKey ? 'w-16' : 'w-10'} 
+                    h-14 
+                    ${getKeyColor(key)}
+                    text-white 
+                    font-bold 
+                    rounded 
+                    transition-colors
+                    flex 
+                    items-center 
+                    justify-center
+                    text-sm
+                  `}
+                >
+                  {key === 'BACK' ? '←' : key}
+                </button>
               );
             })}
           </div>
