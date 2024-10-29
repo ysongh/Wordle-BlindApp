@@ -82,6 +82,7 @@ export default function Wordle() {
   };
 
   let computeOutput = "idle";
+  let computeArray = null;
   if (nilComputeOutput.isSuccess) {
     computeOutput = JSON.stringify(nilComputeOutput.data, (key, value) => {
       if (typeof value === "bigint") {
@@ -89,6 +90,8 @@ export default function Wordle() {
       }
       return value;
     });
+    computeArray = JSON.parse(computeOutput);
+    computeArray = Object.values(computeArray);
   }
 
 
@@ -157,8 +160,8 @@ export default function Wordle() {
   const getTileColor = (letter, index, rowIndex) => {
     if (rowIndex > currentRow) return 'bg-gray-200';
     if (!letter) return 'bg-gray-200';
-    if (targetWord[index] === letter) return 'bg-green-500';
-    if (targetWord.includes(letter)) return 'bg-yellow-500';
+    if (computeArray && computeArray[index] === "1") return 'bg-green-500';
+    if (computeArray && computeArray[index] === "2") return 'bg-yellow-500';
     return 'bg-gray-400';
   };
 
