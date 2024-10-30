@@ -150,9 +150,13 @@ export default function Wordle() {
       .insert(NamedValue.parse("letter_1"), NadaValue.createSecretInteger(letterToNumber(targetWord[0])))
       .insert(NamedValue.parse("letter_2"), NadaValue.createSecretInteger(letterToNumber(targetWord[1])))
       .insert(NamedValue.parse("letter_3"), NadaValue.createSecretInteger(letterToNumber(targetWord[2])))
+      .insert(NamedValue.parse("letter_4"), NadaValue.createSecretInteger(letterToNumber(targetWord[3])))
+      .insert(NamedValue.parse("letter_5"), NadaValue.createSecretInteger(letterToNumber(targetWord[4])))
       .insert(NamedValue.parse("guess_letter_1"), NadaValue.createSecretInteger(letterToNumber(currentGuess[0])))
       .insert(NamedValue.parse("guess_letter_2"), NadaValue.createSecretInteger(letterToNumber(currentGuess[1])))
-      .insert(NamedValue.parse("guess_letter_3"), NadaValue.createSecretInteger(letterToNumber(currentGuess[2])));
+      .insert(NamedValue.parse("guess_letter_3"), NadaValue.createSecretInteger(letterToNumber(currentGuess[2])))
+      .insert(NamedValue.parse("guess_letter_4"), NadaValue.createSecretInteger(letterToNumber(currentGuess[3])))
+      .insert(NamedValue.parse("guess_letter_5"), NadaValue.createSecretInteger(letterToNumber(currentGuess[4])));
 
     nilCompute.execute({ bindings, values });
   };
@@ -160,8 +164,8 @@ export default function Wordle() {
   const getTileColor = (letter, index, rowIndex) => {
     if (rowIndex > currentRow) return 'bg-gray-200';
     if (!letter) return 'bg-gray-200';
-    if (computeArray && computeArray[index] === "1") return 'bg-green-500';
-    if (computeArray && computeArray[index] === "2") return 'bg-yellow-500';
+    if (computeArray && computeArray[index] === "9") return 'bg-green-500';
+    if (computeArray && Number(computeArray[index]) > 0) return 'bg-yellow-500';
     return 'bg-gray-400';
   };
 
