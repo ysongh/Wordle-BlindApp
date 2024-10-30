@@ -37,6 +37,7 @@ export default function Wordle() {
   const [gameOver, setGameOver] = useState(false);
   const [message, setMessage] = useState('');
   const [usedLetters, setUsedLetters] = useState({});
+  const [computeArray, setComputeArray] = useState([]);
 
   useEffect(() => {
     setTargetWord(WORDS[Math.floor(Math.random() * WORDS.length)]);
@@ -46,6 +47,10 @@ export default function Wordle() {
     if (nilCompute.data) handleGetOutput();
   }, [!nilCompute.data])
 
+  useEffect(() => {
+    if (nilCompute.data) recordResult();
+  }, [!nilCompute.data])
+  
   useEffect(() => {
     const handleKeyboard = (e) => {
       if (e.key === 'Enter') {
@@ -76,13 +81,26 @@ export default function Wordle() {
     }
   };
 
+  const recordResult = () => {
+    console.log(computeArray, "computeArray");
+    if (nilComputeOutput.isSuccess) {
+      let computeOutput = JSON.stringify(nilComputeOutput.data, (key, value) => {
+        if (typeof value === "bigint") {
+          return value.toString();
+        }
+        return value;
+      });
+      setComputeArray([...computeArray, Object.values(JSON.parse(computeOutput))])
+    }
+  };
+
   const handleGetOutput = () => {
     if (!nilCompute.data) throw new Error("compute-output: Compute id is required");
     nilComputeOutput.execute({ id: nilCompute.data });
   };
 
   let computeOutput = "idle";
-  let computeArray = null;
+  // let computeArray = [] as any;
   if (nilComputeOutput.isSuccess) {
     computeOutput = JSON.stringify(nilComputeOutput.data, (key, value) => {
       if (typeof value === "bigint") {
@@ -90,8 +108,7 @@ export default function Wordle() {
       }
       return value;
     });
-    computeArray = JSON.parse(computeOutput);
-    computeArray = Object.values(computeArray);
+    // computeArray.push(Object.values(JSON.parse(computeOutput)));
   }
 
 
@@ -162,10 +179,11 @@ export default function Wordle() {
   };
 
   const getTileColor = (letter, index, rowIndex) => {
+    // console.log(letter, index, rowIndex, computeArray)
     if (rowIndex > currentRow) return 'bg-gray-200';
     if (!letter) return 'bg-gray-200';
-    if (computeArray && computeArray[index] === "9") return 'bg-green-500';
-    if (computeArray && Number(computeArray[index]) > 0) return 'bg-yellow-500';
+    if (computeArray[rowIndex] && computeArray[rowIndex][index] === "9") return 'bg-green-500';
+    if (computeArray[rowIndex] && Number(computeArray[rowIndex][index]) > 0) return 'bg-yellow-500';
     return 'bg-gray-400';
   };
 
