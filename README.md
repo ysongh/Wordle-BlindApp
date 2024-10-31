@@ -1,21 +1,4 @@
-## Nextjs Example for Create Nillion App (CNA)
+# Wordle BlindApp
+A Wordle game with an encrypted word that the user does not know. It uses Nillion to encrypt the word without revealing it to the user.
 
-![Example Demo](./public/example_demo.png)
-
-Welcome the Nextjs Example for CNA.
-
-Once the CLI insturctions have finished, you can run the developent server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-Then follow the rest of the instructions from the Quickstart guide [here.](https://github.com/NillionNetwork/awesome-nillion/issues/2)
+![Game Demo](./public/game.png)
