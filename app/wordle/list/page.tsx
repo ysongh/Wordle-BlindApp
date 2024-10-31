@@ -1,8 +1,11 @@
 "use client";
 
 import React, { useState } from 'react';
+import { useRouter } from "next/navigation";
 
 const WordleGamesList = () => {
+  const router = useRouter();
+
   const [games] = useState([
     {
       id: 1,
@@ -50,7 +53,7 @@ const WordleGamesList = () => {
         <div className="flex justify-between items-center mt-[70px]">
           <h1 className="text-3xl font-bold text-gray-900">Wordle Games</h1>
           <button className="inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg 
-            hover:bg-blue-700 transition-colors duration-200">
+            hover:bg-blue-700 transition-colors duration-200"  onClick={() => router.push("/wordle/create-game")}>
             New Game
           </button>
         </div>
@@ -87,7 +90,7 @@ const WordleGamesList = () => {
                   </div>
 
                   <div className="flex justify-end">
-                    <button className="inline-flex items-center text-blue-600 hover:text-blue-800">
+                    <button className="inline-flex items-center text-blue-600 hover:text-blue-800" onClick={() => router.push("/wordle")}>
                       View Details
                     </button>
                   </div>

@@ -1,5 +1,10 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+  
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Hero Section */}
@@ -16,7 +21,7 @@ export default function Home() {
           
           <div className="mt-12 text-center">
             <button className="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold 
-              hover:bg-blue-700 transition-colors duration-200">
+              hover:bg-blue-700 transition-colors duration-200" onClick={() => router.push("/wordle/list")}>
               Start Playing
             </button>
           </div>
